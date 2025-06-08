@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Class Attendance</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h2>Class Attendance</h2>
+
+  <!-- Add Attendance Form -->
+  <form method="POST" action="/class_attendance/add">
+    <select name="class_id" required>
+      {{#each classes}}
+      <option value="{{this.class_ID}}">{{this.name}}</option>
+      {{/each}}
+    </select>
+
+    <select name="member_id" required>
+      {{#each members}}
+      <option value="{{this.member_ID}}">{{this.name}}</option>
+      {{/each}}
+    </select>
+
+    <input type="datetime-local" name="date" required>
+    <button type="submit">Add Attendance</button>
+  </form>
+
+  <!-- Attendance Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Class</th>
+        <th>Member</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each attendance}}
+      <tr>
+        <td>{{this.class_ID}}</td>
+        <td>{{this.member_ID}}</td>
+        <td>{{this.date}}</td>
+        <td>
+          <form method="POST" action="/class_attendance/delete" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this attendance record?');">
+            <input type="hidden" name="class_ID" value="{{this.class_ID}}">
+            <input type="hidden" name="member_ID" value="{{this.member_ID}}">
+            <button type="submit">Delete</button>
+          </form>
+          <button type="button" onclick="toggleUpdateRow('update-row-{{this.class_ID}}-{{this.member_ID}}')">Edit</button>
+        </td>
+      </tr>
+
+      <!-- Update Row -->
+      <tr id="update-row-{{this.class_ID}}-{{this.member_ID}}" style="display:none;">
+        <td colspan="4" style="background-color:#f0f4ff;">
+          <form method="POST" action="/class_attendance/update">
+            <input type="hidden" name="old_class_ID" value="{{this.class_ID}}">
+            <input type="hidden" name="old_member_ID" value="{{this.member_ID}}">
+
+            <div class="update-form-fields">
+              <select name="new_class_ID" required>
+                {{#each ../classes}}
+                <option value="{{this.class_ID}}">{{this.name}}</option>
+                {{/each}}
+              </select>
+
+              <select name="new_member_ID" required>
+                {{#each ../members}}
+                <option value="{{this.member_ID}}">{{this.name}}</option>
+                {{/each}}
+              </select>
+
+              <input type="datetime-local" name="new_date" required>
+
+              <div>
+                <button type="submit">Save</button>
+                <button type="button" onclick="toggleUpdateRow('update-row-{{this.class_ID}}-{{this.member_ID}}')">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <a href="/">Return to Home</a>
+
+  <!-- Inline JavaScript -->
+  <script>
+    function toggleUpdateRow(rowId) {
+      const row = document.getElementById(rowId);
+      if (row) {
+        row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+      }
+    }
+  </script>
+
+</body>
+</html>
