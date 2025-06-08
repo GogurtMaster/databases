@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Members</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h2>Members</h2>
+
+  <!-- Add Member Form -->
+  <form method="POST" action="/members/add">
+    <input type="text" name="name" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="tel" name="phone" placeholder="Phone" required>
+    <button type="submit">Add Member</button>
+  </form>
+
+  <!-- Members Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each members}}
+      <tr>
+        <td>{{this.member_ID}}</td>
+        <td>{{this.name}}</td>
+        <td>{{this.email}}</td>
+        <td>{{this.phone}}</td>
+        <td>
+          <!-- Delete -->
+          <form method="POST" action="/members/delete" onsubmit="return confirm('Are you sure you want to delete this member?');" style="display:inline;">
+            <input type="hidden" name="member_ID" value="{{this.member_ID}}">
+            <button type="submit">Delete</button>
+          </form>
+
+          <!-- Edit -->
+          <button type="button" onclick="toggleUpdateRow('update-row-{{this.member_ID}}')">Edit</button>
+        </td>
+      </tr>
+
+      <!-- Update Row -->
+      <tr id="update-row-{{this.member_ID}}" style="display:none;">
+        <td colspan="5" style="background-color:#f0f4ff;">
+          <form method="POST" action="/members/update">
+            <input type="hidden" name="member_ID" value="{{this.member_ID}}">
+            <div class="update-form-fields">
+              <input type="text" name="name" value="{{this.name}}" required>
+              <input type="email" name="email" value="{{this.email}}" required>
+              <input type="tel" name="phone" value="{{this.phone}}" required>
+              <div>
+                <button type="submit">Save</button>
+                <button type="button" onclick="toggleUpdateRow('update-row-{{this.member_ID}}')">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <a href="/">Return to Home</a>
+
+  <!-- Inline JavaScript -->
+  <script>
+    function toggleUpdateRow(rowId) {
+      const row = document.getElementById(rowId);
+      if (row) {
+        row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+      }
+    }
+  </script>
+
+</body>
+</html>
