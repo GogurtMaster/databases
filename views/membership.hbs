@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Memberships</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h2>Memberships</h2>
+
+  <!-- Add Membership Form -->
+  <form method="POST" action="/membership/add">
+    <select name="member_id" required>
+      {{#each members}}
+      <option value="{{this.member_ID}}">{{this.name}}</option>
+      {{/each}}
+    </select>
+    <select name="trainer_id" required>
+      {{#each trainers}}
+      <option value="{{this.trainer_ID}}">{{this.name}}</option>
+      {{/each}}
+    </select>
+    <select name="type" required>
+      <option value="Monthly">Monthly</option>
+      <option value="Quarterly">Quarterly</option>
+      <option value="Yearly">Yearly</option>
+    </select>
+    <input type="date" name="start_date" required>
+    <input type="date" name="end_date" required>
+    <button type="submit">Add Membership</button>
+  </form>
+
+  <!-- Membership Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Member</th>
+        <th>Trainer</th>
+        <th>Type</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each memberships}}
+      <tr>
+        <td>{{this.membership_ID}}</td>
+        <td>{{this.member_ID}}</td>
+        <td>{{this.trainer_ID}}</td>
+        <td>{{this.type}}</td>
+        <td>{{this.start_date}}</td>
+        <td>{{this.end_date}}</td>
+        <td>
+          <form method="POST" action="/membership/delete" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this membership?');">
+            <input type="hidden" name="membership_ID" value="{{this.membership_ID}}">
+            <button type="submit">Delete</button>
+          </form>
+          <button type="button" onclick="toggleUpdateRow('update-row-{{this.membership_ID}}')">Edit</button>
+        </td>
+      </tr>
+
+      <!-- Update Row -->
+      <tr id="update-row-{{this.membership_ID}}" style="display:none;">
+        <td colspan="7" style="background-color:#f0f4ff;">
+          <form method="POST" action="/membership/update">
+            <input type="hidden" name="membership_ID" value="{{this.membership_ID}}">
+            <div class="update-form-fields">
+              <select name="member_ID" required>
+                {{#each ../members}}
+                <option value="{{this.member_ID}}">{{this.name}}</option>
+                {{/each}}
+              </select>
+
+              <select name="trainer_ID" required>
+                {{#each ../trainers}}
+                <option value="{{this.trainer_ID}}">{{this.name}}</option>
+                {{/each}}
+              </select>
+
+              <select name="type" required>
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Yearly">Yearly</option>
+              </select>
+
+              <input type="date" name="start_date" required>
+              <input type="date" name="end_date" required>
+
+              <div>
+                <button type="submit">Save</button>
+                <button type="button" onclick="toggleUpdateRow('update-row-{{this.membership_ID}}')">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <a href="/">Return to Home</a>
+
+  <!-- Inline JavaScript -->
+  <script>
+    function toggleUpdateRow(rowId) {
+      const row = document.getElementById(rowId);
+      if (row) {
+        row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+      }
+    }
+  </script>
+
+</body>
+</html>
