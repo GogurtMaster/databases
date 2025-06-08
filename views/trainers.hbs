@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trainers</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h2>Trainers</h2>
+
+  <!-- Add Trainer Form -->
+  <form method="POST" action="/trainers/add">
+    <input type="text" name="name" placeholder="Name" required>
+    <input type="text" name="specialization" placeholder="Specialization" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="tel" name="phone" placeholder="Phone" required>
+    <select name="availability" required>
+      <option value="Available" selected>Available</option>
+      <option value="Unavailable">Unavailable</option>
+    </select>
+    <button type="submit">Add Trainer</button>
+  </form>
+
+  <!-- Trainers Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Specialization</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Availability</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each trainers}}
+      <tr>
+        <td>{{this.trainer_ID}}</td>
+        <td>{{this.name}}</td>
+        <td>{{this.specialization}}</td>
+        <td>{{this.email}}</td>
+        <td>{{this.phone}}</td>
+        <td>{{this.availability}}</td>
+        <td>
+          <!-- Delete Form -->
+          <form method="POST" action="/trainers/delete" onsubmit="return confirm('Are you sure you want to delete this trainer?');" style="display:inline;">
+            <input type="hidden" name="trainer_ID" value="{{this.trainer_ID}}">
+            <button type="submit">Delete</button>
+          </form>
+          <!-- Edit Button -->
+          <button type="button" onclick="toggleUpdateRow('update-row-{{this.trainer_ID}}')">Edit</button>
+        </td>
+      </tr>
+
+      <!-- Update Row -->
+      <tr id="update-row-{{this.trainer_ID}}" style="display:none;">
+        <td colspan="7">
+          <form method="POST" action="/trainers/update">
+            <input type="hidden" name="trainer_ID" value="{{this.trainer_ID}}">
+            <div style="display: flex; flex-direction: column; gap: 0.5em; margin-top: 0.5em;">
+              <input type="text" name="name" value="{{this.name}}" required>
+              <input type="text" name="specialization" value="{{this.specialization}}" required>
+              <input type="email" name="email" value="{{this.email}}" required>
+              <input type="tel" name="phone" value="{{this.phone}}" required>
+              <select name="availability" required>
+                <option value="Available" selected>Available</option>
+                <option value="Unavailable">Unavailable</option>
+              </select>
+              <div>
+                <button type="submit">Save</button>
+                <button type="button" onclick="toggleUpdateRow('update-row-{{this.trainer_ID}}')">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <a href="/">Return to Home</a>
+
+  <!-- Inline JavaScript -->
+  <script>
+    function toggleUpdateRow(rowId) {
+      const row = document.getElementById(rowId);
+      if (row) {
+        row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+      }
+    }
+  </script>
+
+</body>
+</html>
